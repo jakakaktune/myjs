@@ -1,1 +1,1 @@
-document.querySelector('body nav:first-of-type').style.backgroundColor = "red";
+document.querySelector('body nav:first-of-type > div').setAttribute('style', 'background-color: red !important');
