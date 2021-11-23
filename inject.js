@@ -20,7 +20,7 @@ var readyStateCheckInterval = setInterval(function() {
 	}
 	}, 10);
 
-fundtion replace_button () {
+function replace_button () {
 	let button = document.querySelector('button[data-test-selector="follow-button"]')?? document.querySelector('button[data-test-selector="unfollow-button"]');
 	let parent = button.parentNode;
 	
