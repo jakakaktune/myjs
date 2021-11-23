@@ -5,7 +5,8 @@ var readyStateCheckInterval = setInterval(function() {
 		let current_url = window.location.href;
 
 		if (current_url.split('twitch.tv')[1].length > 1) {
-			replace_player();
+// 			replace_player();
+			replace_button();
 		}
 
 		window.addEventListener('click', () => {
@@ -18,6 +19,21 @@ var readyStateCheckInterval = setInterval(function() {
 		});
 	}
 	}, 10);
+
+fundtion replace_button () {
+	let button = document.querySelector('button[data-test-selector="follow-button"]')?? document.querySelector('button[data-test-selector="unfollow-button"]');
+	let parent = button.parentNode;
+	
+	let new_button = document.createElement('a');
+	
+	new_button.setAttribute('href', 'vlc-x-callback://x-callback-url/stream?url='+video_url);
+	
+	new_button.innerHTML = 'vlc';
+	
+	new_button.setAttribute('class', button.className);
+	
+	button.insertBefore(new_button);
+}
 
 function replace_player () {
 	const proxy_url      = 'https://jaka.ml:51820';
