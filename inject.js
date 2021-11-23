@@ -1,5 +1,6 @@
 var readyStateCheckInterval = setInterval(function() {
-	if (document.readyState === "interactive" || document.readyState === "complete") {
+	let button = document.querySelector('button[data-test-selector="follow-button"]')?? document.querySelector('button[data-test-selector="unfollow-button"]');
+	if ((document.readyState === "interactive" || document.readyState === "complete") && button) {
 		clearInterval(readyStateCheckInterval);
 
 		let current_url = window.location.href;
@@ -28,6 +29,39 @@ function replace_button () {
 	const file_extension = '.m3u8';
 	let stream_url = "";
 
+	
+	var readyStateCheckInterval = setInterval(function() {
+	let button = document.querySelector('button[data-test-selector="follow-button"]')?? document.querySelector('button[data-test-selector="unfollow-button"]');
+	if ((document.readyState === "interactive" || document.readyState === "complete") && button) {
+		clearInterval(readyStateCheckInterval);
+
+		let current_url = window.location.href;
+
+		if (current_url.split('twitch.tv')[1].length > 1) {
+// 			replace_player();
+			replace_button();
+		}
+
+		window.addEventListener('click', () => {
+			console.log('location: ' + window.location.href);
+			if (window.location.href != current_url) {
+				console.log('change url');
+				current_url = window.location.href;
+				replace_player();
+			}
+		});
+	}
+	}, 10);
+
+
+function replace_button () {
+	
+	const proxy_url      = 'https://jaka.ml:51820';
+	const video_url      = 	window.location.href;
+	const file_extension = '.m3u8';
+	let stream_url = "";
+	
+	
 	// Make a request for a user with a given ID
 	axios.get(`${proxy_url}/get-link/${ btoa(video_url) }`)
 	.then(function (response) {
@@ -38,15 +72,17 @@ function replace_button () {
 		let button = document.querySelector('button[data-test-selector="follow-button"]')?? document.querySelector('button[data-test-selector="unfollow-button"]');
 		let parent = button.parentNode;
 
+		console.log(button);
+
 		let new_button = document.createElement('a');
 
 		new_button.setAttribute('href', 'vlc-x-callback://x-callback-url/stream?url='+stream_url);
 
 		new_button.innerHTML = 'vlc';
 
-		new_button.setAttribute('class', button.className);
+		new_button.setAttribute('style', 'color: white;display: flex;justify-content: center;align-items: center;padding: 6px 10px;margin-right: 10px;background: orange;border-radius: 5px;');
 
-		button.insertBefore(new_button);
+		button.parentNode.insertBefore(new_button, button);
 		
 	})
 	.catch(function (error) {
