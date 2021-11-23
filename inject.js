@@ -1,5 +1,5 @@
 var readyStateCheckInterval = setInterval(function() {
-	if (document.readyState === "interactive") {
+	if (document.readyState === "interactive" || document.readyState === "complete") {
 		clearInterval(readyStateCheckInterval);
 
 		let current_url = window.location.href;
@@ -20,19 +20,41 @@ var readyStateCheckInterval = setInterval(function() {
 	}
 	}, 10);
 
+
 function replace_button () {
-	let button = document.querySelector('button[data-test-selector="follow-button"]')?? document.querySelector('button[data-test-selector="unfollow-button"]');
-	let parent = button.parentNode;
 	
-	let new_button = document.createElement('a');
+	const proxy_url      = 'https://jaka.ml:51820';
+	const video_url      = 	window.location.href;
+	const file_extension = '.m3u8';
+	let stream_url = "";
+
+	// Make a request for a user with a given ID
+	axios.get(`${proxy_url}/get-link/${ btoa(video_url) }`)
+	.then(function (response) {
+
+		stream_url = response.data;
+
+		
+		let button = document.querySelector('button[data-test-selector="follow-button"]')?? document.querySelector('button[data-test-selector="unfollow-button"]');
+		let parent = button.parentNode;
+
+		let new_button = document.createElement('a');
+
+		new_button.setAttribute('href', 'vlc-x-callback://x-callback-url/stream?url='+stream_url);
+
+		new_button.innerHTML = 'vlc';
+
+		new_button.setAttribute('class', button.className);
+
+		button.insertBefore(new_button);
+		
+	})
+	.catch(function (error) {
+		// handle error
+		console.log(error);
+	})
 	
-	new_button.setAttribute('href', 'vlc-x-callback://x-callback-url/stream?url='+video_url);
 	
-	new_button.innerHTML = 'vlc';
-	
-	new_button.setAttribute('class', button.className);
-	
-	button.insertBefore(new_button);
 }
 
 function replace_player () {
